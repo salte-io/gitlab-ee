@@ -18,6 +18,8 @@ describe('The Runner Authorization Module', function() {
                 resolve(fs.readFileSync(path.resolve(__dirname, '../../files/valid.gitlab-ci.yml'), {encoding: 'utf-8'}));
               } else if (argArray[1].includes('5bb9e579cb1518ceb6a45126527aea0877854d8a')) {
                 resolve(fs.readFileSync(path.resolve(__dirname, '../../files/invalid.gitlab-ci.yml'), {encoding: 'utf-8'}));
+              } else if (argArray[1].includes('0000000000000000000000000000000000000000')) {
+                resolve(fs.readFileSync(path.resolve(__dirname, '../../files/empty.gitlab-ci.yml'), {encoding: 'utf-8'}));
               } else {
                 throw new Error('Unexpected Test Case');
               }
@@ -37,6 +39,12 @@ describe('The Runner Authorization Module', function() {
 
   it('should return success when the production runner is restricted to the production branch.', function() {
     return performer.perform('refs/heads/master', '1a6433a6fd254131a11e66f6a77fefc2c11d2a98', '943ac77e2f118d9f9950b4265f3b3c4e3639be8f').then((response) => {
+      chai.expect(response).to.be.true;
+    });
+  });
+
+  it('should return success when the CI file is empty.', function() {
+    return performer.perform('refs/heads/master', '0000000000000000000000000000000000000000', '0000000000000000000000000000000000000000').then((response) => {
       chai.expect(response).to.be.true;
     });
   });
